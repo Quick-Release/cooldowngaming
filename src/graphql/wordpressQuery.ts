@@ -1,32 +1,27 @@
-// get the wordpress api url from the environment variables
 interface gqlParams {
-  query:string;
-  variables?:object;
+  query: String;
+  variables?: object;
 }
 
-export async function wpquery({query, variables = {}}:gqlParams) {
-  const response = await fetch("https://admin-cooldown.getquick.io/graphql", {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({query, variables}),
+export async function wpquery({ query, variables = {} }: gqlParams) {
+  const res = await fetch('https://admin-cooldown.getquick.io/graphql', {
+      method: "post",
+      headers: {
+          "Content-Type": "application/json",
+
+      },
+
+      body: JSON.stringify({
+          query,
+          variables,
+      }),
   });
 
-  if (!response.ok) {
-    console.error('Response not OK:', response.status, response.statusText);
-    return {};
+  if (!res.ok) {
+      console.error(res);
+      return {};
   }
 
-  const data = await response.json();
-
-  // Log the response data to help debug
-  console.log('GraphQL Response:', JSON.stringify(data, null, 2));
-
-  if (data.errors) {
-    console.error('GraphQL Errors:', data.errors);
-    return {};
-  }
-
+  const { data } = await res.json();
   return data;
 }
