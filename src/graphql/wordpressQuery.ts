@@ -3,25 +3,26 @@ interface gqlParams {
   variables?: object;
 }
 
+const WORDPRESS_URL = import.meta.env.WORDPRESS_URL;
+const headers = {
+  "Content-Type": "application/json",
+}
+
 export async function wpquery({ query, variables = {} }: gqlParams) {
-  const res = await fetch('https://admin-cooldown.getquick.io/graphql', {
+  const response = await fetch(WORDPRESS_URL, {
       method: "post",
-      headers: {
-          "Content-Type": "application/json",
-
-      },
-
+      headers,
       body: JSON.stringify({
           query,
           variables,
       }),
   });
 
-  if (!res.ok) {
-      console.error(res);
+  if (!response.ok) {
+      console.error(response);
       return {};
   }
 
-  const { data } = await res.json();
+  const { data } = await response.json();
   return data;
 }
